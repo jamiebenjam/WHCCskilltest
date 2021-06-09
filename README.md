@@ -11,7 +11,7 @@ You may also use ES6, do not worry about supporting ES5.
 Try to timebox your work to approximately 1-2 hours.
 
 # Requirements
-1. The app will display a list of the most recent Hacker News stories in descending order.
+1. The app should initially display a list of the 15 most recent Hacker News stories in descending order.
 1. Each story list item should show the title, the author's name, and the time it was posted.
 1. The users are very impatient so please display each story as soon as it is fetched.
 1. The app should support infinite scrolling. When a user reaches the bottom of the page it should load more stories.
