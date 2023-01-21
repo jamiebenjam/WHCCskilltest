@@ -5,42 +5,81 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>WHCC Hacker News Reader</title>
     <script type="text/javascript">
-       function getStories() {
-                fetch('https://hacker-news.firebaseio.com/v0/newstories.json')
-                    .then(response => response.json())
-                    .then(data => {
-                        // only get the first 15 items
-                        const topStories = data.slice(0, 15);
-                        // fetch the details of each story
-                        Promise.all(topStories.map(id =>
-                            fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
-                                .then(response => response.json())
-                                )).then(stories => {
-                            // sort the stories in descending order
-                            // stories.sort((a, b) => b.time - a.time);
-                            // display the stories on the page
-                            const list = document.createElement('ol');
-                            stories.forEach(story => {
-                                const listItem = document.createElement('li');
-                                const title = document.createElement('a');
-                                title.innerText = story.title;
-                                title.href = story.url;
-                                title.target = '_blank'
-                                const author = document.createElement('div');
-                                author.innerText = `Author: ${story.by}`;
-                                const postTime = document.createElement('div'); 
-                                postTime.innerText = `Posted: ${new Date(story.time * 1000).toLocaleString()}`;
-                                listItem.appendChild(title);
-                                listItem.appendChild(author);
-                                listItem.appendChild(postTime);
-                                list.appendChild(listItem);
-                            });
-                            document.body.appendChild(list);
-                        });
-                    });
-                }
-getStories();
+        const HN_API = 'https://hacker-news.firebaseio.com/v0';
 
+        let currentPage = 0;
+        let storyIds;
+        let isLoading = false;
+
+        // function to get story ids from the API
+        const getStoryIds = async () => {
+        const response = await fetch(`${HN_API}/newstories.json`);
+        storyIds = await response.json();
+        };
+
+        // function to get a specific story from the API
+        const getStory = async (storyId) => {
+        const response = await fetch(`${HN_API}/item/${storyId}.json`);
+        return await response.json();
+        };
+
+        // function to create a new DOM element for a story
+        const createStoryElement = (story) => {
+            const list = document.createElement('ul');
+            const listItem = document.createElement('li');
+            const title = document.createElement('a');
+            title.innerText = story.title;
+            title.href = story.url;
+            title.target = '_blank'
+            const author = document.createElement('div');
+            author.innerText = `Author: ${story.by}`;
+            const postTime = document.createElement('div'); 
+            postTime.innerText = `Posted: ${new Date(story.time * 1000).toLocaleString()}`;
+            listItem.appendChild(title);
+            listItem.appendChild(author);
+            listItem.appendChild(postTime);
+            list.appendChild(listItem)
+                return list;
+        };
+
+        // function to load the next page of stories
+        const loadStories = async () => {
+        if (isLoading) {
+            return;
+        }
+        isLoading = true;
+
+        const start = currentPage * 15;
+        const end = start + 15;
+        const pageStories = storyIds.slice(start, end);
+
+        const storiesContainer = document.getElementById('stories');
+
+        for (const storyId of pageStories) {
+            const story = await getStory(storyId);
+            const storyEl = createStoryElement(story);
+            storiesContainer.appendChild(storyEl);
+        }
+
+        currentPage++;
+        isLoading = false;
+        };
+
+        // function to check if user has scrolled to the bottom of the page
+        const checkForBottom = () => {
+        const scrollTop = document.documentElement.scrollTop;
+        const clientHeight = document.documentElement.clientHeight;
+        const scrollHeight = document.documentElement.scrollHeight;
+        if (scrollTop + clientHeight >= scrollHeight) {
+            loadStories();
+        }
+        };
+
+        // on page load
+        getStoryIds().then(() => {
+        loadStories();
+        window.addEventListener('scroll', checkForBottom);
+        });
     </script>
 </head>
 <body>
