@@ -1,11 +1,41 @@
+@font-face {
+    font-family: Argesta;
+    src: url(argestadisplay-regular-webfont.ttf);
+}
+
+@font-face {
+    font-family: North;
+    src: url(North\ Carossela.otf);
+}
+
+div {
+    font-family: Argesta;
+}
+
 body {
-    /* background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('path/to/image.jpg'); */
+    padding: 2em;
+    background-color: #FAF9F6;
+}
+
+h1 {
+    font-family: North, sans-serif;
+    text-align: center;
+    font-size: 60px;
+    border: 5px;
+    border-color: #1f2091;
+    border-style: solid;
+    border-radius: 60px;
+    padding: 50px;
+}
+
+a {
+    font-weight: 800;
+    color: black;
+    text-decoration: none;
 }
 
 ol li {
     font-size: 18px;
     margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
+    padding: 20px;
 }

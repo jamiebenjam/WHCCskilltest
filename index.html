@@ -24,10 +24,12 @@
                                 const listItem = document.createElement('li');
                                 const title = document.createElement('a');
                                 title.innerText = story.title;
+                                title.href = story.url;
+                                title.target = '_blank'
                                 const author = document.createElement('div');
                                 author.innerText = `Author: ${story.by}`;
                                 const postTime = document.createElement('div'); 
-                                postTime.innerText = `Post time: ${new Date(story.time * 1000).toLocaleString()}`;
+                                postTime.innerText = `Posted: ${new Date(story.time * 1000).toLocaleString()}`;
                                 listItem.appendChild(title);
                                 listItem.appendChild(author);
                                 listItem.appendChild(postTime);
