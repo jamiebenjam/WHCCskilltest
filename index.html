@@ -1,19 +1,44 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="styles.css">
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>WHCC Hacker News Reader</title>
     <script type="text/javascript">
-        function getStories() {
-            fetch('https://hacker-news.firebaseio.com/v0/newstories.json')
-                .then((response) => {
-                    return response.json();
-                })
-                .then((myJson) => {
-                    document.getElementById("stories").innerHTML = myJson;
-                });
-        }
-        getStories();
+       function getStories() {
+                fetch('https://hacker-news.firebaseio.com/v0/newstories.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        // only get the first 15 items
+                        const topStories = data.slice(0, 15);
+                        // fetch the details of each story
+                        Promise.all(topStories.map(id =>
+                            fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
+                                .then(response => response.json())
+                                )).then(stories => {
+                            // sort the stories in descending order
+                            // stories.sort((a, b) => b.time - a.time);
+                            // display the stories on the page
+                            const list = document.createElement('ol');
+                            stories.forEach(story => {
+                                const listItem = document.createElement('li');
+                                const title = document.createElement('a');
+                                title.innerText = story.title;
+                                const author = document.createElement('div');
+                                author.innerText = `Author: ${story.by}`;
+                                const postTime = document.createElement('div'); 
+                                postTime.innerText = `Post time: ${new Date(story.time * 1000).toLocaleString()}`;
+                                listItem.appendChild(title);
+                                listItem.appendChild(author);
+                                listItem.appendChild(postTime);
+                                list.appendChild(listItem);
+                            });
+                            document.body.appendChild(list);
+                        });
+                    });
+                }
+getStories();
+
     </script>
 </head>
 <body>
