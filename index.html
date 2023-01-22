@@ -13,14 +13,14 @@
 
         // function to get story ids from the API
         const getStoryIds = async () => {
-        const response = await fetch(`${HN_API}/newstories.json`);
-        storyIds = await response.json();
+            const response = await fetch(`${HN_API}/newstories.json`);
+            storyIds = await response.json();
         };
 
         // function to get a specific story from the API
         const getStory = async (storyId) => {
-        const response = await fetch(`${HN_API}/item/${storyId}.json`);
-        return await response.json();
+            const response = await fetch(`${HN_API}/item/${storyId}.json`);
+            return await response.json();
         };
 
         // function to create a new DOM element for a story
@@ -44,42 +44,46 @@
 
         // function to load the next page of stories
         const loadStories = async () => {
-        if (isLoading) {
-            return;
-        }
-        isLoading = true;
+            if (isLoading) {
+                return;
+            }
+            isLoading = true;
 
-        const start = currentPage * 15;
-        const end = start + 15;
-        const pageStories = storyIds.slice(start, end);
+            const start = currentPage * 15;
+            const end = start + 15;
+            const pageStories = storyIds.slice(start, end);
 
-        const storiesContainer = document.getElementById('stories');
+            const storiesContainer = document.getElementById('stories');
 
-        for (const storyId of pageStories) {
-            const story = await getStory(storyId);
-            const storyEl = createStoryElement(story);
-            storiesContainer.appendChild(storyEl);
-        }
+            for (const storyId of pageStories) {
+                const story = await getStory(storyId);
+                const storyEl = createStoryElement(story);
+                storiesContainer.appendChild(storyEl);
+            }
 
-        currentPage++;
-        isLoading = false;
+            currentPage++;
+            isLoading = false;
         };
 
         // function to check if user has scrolled to the bottom of the page
         const checkForBottom = () => {
-        const scrollTop = document.documentElement.scrollTop;
-        const clientHeight = document.documentElement.clientHeight;
-        const scrollHeight = document.documentElement.scrollHeight;
-        if (scrollTop + clientHeight >= scrollHeight) {
-            loadStories();
-        }
+            const scrollTop = document.documentElement.scrollTop;
+            const clientHeight = document.documentElement.clientHeight;
+            const scrollHeight = document.documentElement.scrollHeight;
+            console.log(scrollTop, clientHeight, scrollHeight)
+            if (scrollTop + clientHeight >= scrollHeight - 5) {
+                loadStories();
+            }
         };
 
         // on page load
         getStoryIds().then(() => {
-        loadStories();
-        window.addEventListener('scroll', checkForBottom);
+            loadStories();
+            window.addEventListener('scroll', checkForBottom);
+            window.addEventListener('touchmove', checkForBottom);
+
         });
+        
     </script>
 </head>
 <body>
