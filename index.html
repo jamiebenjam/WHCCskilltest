@@ -33,7 +33,7 @@
             title.target = '_blank'
             const author = document.createElement('div');
             author.innerText = `Author: ${story.by}`;
-            const postTime = document.createElement('div'); 
+            const postTime = document.createElement('h4'); 
             postTime.innerText = `Posted: ${new Date(story.time * 1000).toLocaleString()}`;
             listItem.appendChild(title);
             listItem.appendChild(author);
@@ -70,7 +70,6 @@
             const scrollTop = document.documentElement.scrollTop;
             const clientHeight = document.documentElement.clientHeight;
             const scrollHeight = document.documentElement.scrollHeight;
-            console.log(scrollTop, clientHeight, scrollHeight)
             if (scrollTop + clientHeight >= scrollHeight - 5) {
                 loadStories();
             }
